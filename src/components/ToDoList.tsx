@@ -4,6 +4,10 @@ import { Categories, categoryState, toDoSelector } from "../atoms";
 import ToDo from "./ToDo";
 import React from "react";
 
+// interface ICategory {
+//   category: string;
+// }
+
 function ToDoList() {
   const toDos = useRecoilValue(toDoSelector);
   const [category, setCategory] = useRecoilState(categoryState);
@@ -14,10 +18,11 @@ function ToDoList() {
     <div>
       <h1>To Dos</h1>
       <hr />
+      {/* <CreateCategory /> */}
       <select value={category} onInput={onInput}>
-        <option value={Categories.TO_DO}>To Do</option>
-        <option value={Categories.DOING}>Doing</option>
-        <option value={Categories.DONE}>Done</option>
+        <option value="TO_DO">To Do</option>
+        <option value="DOING">Doing</option>
+        <option value="DONE">Done</option>
       </select>
       <CreateToDo />
       {toDos.map((toDo) => (

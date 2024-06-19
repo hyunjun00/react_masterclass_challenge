@@ -6,10 +6,16 @@ export enum Categories {
   "DONE" = "DONE",
 }
 
+// export type Categories = "TO_DO" | "DOING" | "DONE";
+
 export interface IToDo {
   text: string;
   id: number;
   category: Categories;
+}
+
+export interface ICategory {
+  case: string;
 }
 
 export const categoryState = atom<Categories>({
@@ -30,3 +36,14 @@ export const toDoSelector = selector({
     return toDos.filter((toDo) => toDo.category === category);
   },
 });
+
+// export interface IToDo {
+//   text: string;
+//   id: number;
+//   category: Categories;
+// }
+
+// export const categoryState = atom<Categories>({
+//   key: "category",
+//   default: Categories.TO_DO,
+// });
