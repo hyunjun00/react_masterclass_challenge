@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { makeImagePath } from "../utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import useWindowDimensions from "../useWindowDimensions";
 
 const Wrapper = styled.div`
   background-color: black;
@@ -47,29 +48,21 @@ const Slider = styled.div`
 const Row = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
+  gap: 5px;
   position: absolute;
   width: 100%;
 `;
 
-const Box = styled(motion.div)`
+const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-color: white;
   height: 200px;
-  color: red;
+  background-image: url(${(props) => props.bgPhoto});
   font-size: 64px;
+  background-size: cover;
+  background-position: center center;
 `;
 
-const rowVariants = {
-  hidden: {
-    x: window.outerWidth + 80,
-  },
-  visible: {
-    x: 0,
-  },
-  exit: {
-    x: -window.outerWidth - 80,
-  },
-};
+const offset = 6;
 
 function Home() {
   const { data, isLoading } = useQuery<IGetMoviesResult>(
@@ -77,7 +70,18 @@ function Home() {
     getMovies
   );
   const [index, setIndex] = useState(0);
-  const increaseIndex = () => setIndex((prev) => prev + 1);
+  const [leaving, setLeaving] = useState(false);
+  const increaseIndex = () => {
+    if (data) {
+      if (leaving) return;
+      toggleLeaving();
+      const totalMovies = data.results.length - 1;
+      const maxIndex = Math.floor(totalMovies / offset) - 1;
+      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+    }
+  };
+  const toggleLeaving = () => setLeaving((prev) => !prev);
+  const width = useWindowDimensions();
   return (
     <Wrapper>
       {isLoading ? (
@@ -92,18 +96,23 @@ function Home() {
             <Overview>{data?.results[0].overview}</Overview>
             <Slider>
               <Slider>
-                <AnimatePresence>
+                <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
                   <Row
-                    variants={rowVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
+                    initial={{ x: width + 10 }}
+                    animate={{ x: 0 }}
+                    exit={{ x: -width - 10 }}
                     transition={{ type: "tween", duration: 1 }}
                     key={index}
                   >
-                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                      <Box key={i}>{i}</Box>
-                    ))}
+                    {data?.results
+                      .slice(1)
+                      .slice(offset * index, offset * index + offset)
+                      .map((movie) => (
+                        <Box
+                          key={movie.id}
+                          bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                        />
+                      ))}
                   </Row>
                 </AnimatePresence>
               </Slider>
