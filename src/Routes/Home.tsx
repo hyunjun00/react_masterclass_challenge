@@ -42,7 +42,7 @@ const Overview = styled.p`
 
 const Slider = styled.div`
   position: relative;
-  top: 80px;
+  top: -30px;
 `;
 
 const Row = styled(motion.div)`
@@ -60,9 +60,30 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   font-size: 64px;
   background-size: cover;
   background-position: center center;
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
 `;
 
 const offset = 6;
+
+const boxVariants = {
+  normal: {
+    scale: 1,
+  },
+  hover: {
+    scale: 1.3,
+    y: -50,
+    transition: {
+      delay: 0.5,
+      duration: 0.3,
+      type: "tween",
+    },
+  },
+};
 
 function Home() {
   const { data, isLoading } = useQuery<IGetMoviesResult>(
@@ -94,30 +115,34 @@ function Home() {
           >
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
-            <Slider>
-              <Slider>
-                <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-                  <Row
-                    initial={{ x: width + 10 }}
-                    animate={{ x: 0 }}
-                    exit={{ x: -width - 10 }}
-                    transition={{ type: "tween", duration: 1 }}
-                    key={index}
-                  >
-                    {data?.results
-                      .slice(1)
-                      .slice(offset * index, offset * index + offset)
-                      .map((movie) => (
-                        <Box
-                          key={movie.id}
-                          bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
-                        />
-                      ))}
-                  </Row>
-                </AnimatePresence>
-              </Slider>
-            </Slider>
           </Banner>
+          <Slider>
+            <Slider>
+              <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+                <Row
+                  initial={{ x: width + 10 }}
+                  animate={{ x: 0 }}
+                  exit={{ x: -width - 10 }}
+                  transition={{ type: "tween", duration: 1 }}
+                  key={index}
+                >
+                  {data?.results
+                    .slice(1)
+                    .slice(offset * index, offset * index + offset)
+                    .map((movie) => (
+                      <Box
+                        key={movie.id}
+                        variants={boxVariants}
+                        whileHover="hover"
+                        initial="normal"
+                        transition={{ type: "twwen" }}
+                        bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                      />
+                    ))}
+                </Row>
+              </AnimatePresence>
+            </Slider>
+          </Slider>
         </>
       )}
     </Wrapper>
