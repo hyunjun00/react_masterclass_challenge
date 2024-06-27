@@ -59,6 +59,7 @@ interface ICoin {
   id: string;
   name: string;
   symbol: string;
+  image: string;
   rank: number;
   is_new: boolean;
   is_active: boolean;
@@ -72,7 +73,7 @@ function Coins() {
   return (
     <Container>
       <Helmet>
-        <title>코인</title>
+        <title>FALLOUT-FINANCE</title>
       </Helmet>
       <Header>
         <Title>코인</Title>
@@ -90,9 +91,7 @@ function Coins() {
                   state: { name: coin.name },
                 }}
               >
-                <Img
-                  src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`}
-                />
+                <Img src={coin.image} />
                 {coin.name} &rarr;
               </Link>
             </Coin>

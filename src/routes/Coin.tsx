@@ -51,6 +51,9 @@ const OverviewItem = styled.div`
 `;
 const Description = styled.p`
   margin: 20px 0px;
+  dangerouslysetinnerhtml: {
+    __html: html;
+  }
 `;
 
 const Tabs = styled.div`
@@ -83,23 +86,59 @@ interface RouteState {
 }
 interface InfoData {
   id: string;
-  name: string;
   symbol: string;
-  rank: number;
-  is_new: boolean;
-  is_active: boolean;
-  type: string;
-  description: string;
-  message: string;
-  open_source: boolean;
-  started_at: string;
-  development_status: string;
-  hardware_wallet: boolean;
-  proof_type: string;
-  org_structure: string;
-  hash_algorithm: string;
-  first_data_at: string;
-  last_data_at: string;
+  name: string;
+  web_slug: string;
+  description: {
+    en: string;
+  };
+  links: {
+    homepage: string[];
+  };
+  image: {
+    large: string;
+  };
+  sentiment_votes_up_percentage: number;
+  sentiment_votes_down_percentage: number;
+  market_cap_rank: number;
+  total_supply: number;
+  max_supply: number;
+  circulating_supply: number;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
+  price_change_percentage_7d: number;
+  price_change_percentage_14d: number;
+  price_change_percentage_30d: number;
+  price_change_percentage_60d: number;
+  price_change_percentage_200d: number;
+  price_change_percentage_1y: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  market_data: {
+    current_price: {
+      btc: number;
+    };
+  };
+  // id: string;
+  // name: string;
+  // symbol: string;
+  // rank: number;
+  // is_new: boolean;
+  // is_active: boolean;
+  // type: string;
+  // description: {
+  //   en: string;
+  // };
+  // message: string;
+  // open_source: boolean;
+  // started_at: string;
+  // development_status: string;
+  // hardware_wallet: boolean;
+  // proof_type: string;
+  // org_structure: string;
+  // hash_algorithm: string;
+  // first_data_at: string;
+  // last_data_at: string;
 }
 interface PriceData {
   id: string;
@@ -171,7 +210,7 @@ function Coin() {
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{infoData?.rank}</span>
+              <span>{infoData?.market_cap_rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
@@ -182,7 +221,7 @@ function Coin() {
               <span>{tickersData?.quotes?.USD?.price?.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
-          <Description>{infoData?.description}</Description>
+          <Description>{infoData?.description.en}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
