@@ -4,15 +4,12 @@ import ApexChart from "react-apexcharts";
 import { useRecoilValue } from "recoil";
 import { isDarkAtom } from "../atoms";
 
-interface IHistorical {
-  time_open: string;
-  time_close: string;
-  open: string;
-  high: string;
-  low: string;
-  close: string;
-  volume: string;
-  market_cap: number;
+interface IHistorical extends Array<number> {
+  0: number; // timestamp
+  1: number; // open
+  2: number; // high
+  3: number; // low
+  4: number; // close
 }
 
 interface ChartProps {
@@ -28,7 +25,7 @@ function Chart({ coinId }: ChartProps) {
     }
   );
   const isDark = useRecoilValue(isDarkAtom);
-  return (
+  return !data ? null : (
     <div>
       {isLoading ? (
         "Loading chart..."
@@ -38,7 +35,11 @@ function Chart({ coinId }: ChartProps) {
           series={[
             {
               name: "Price",
-              data: data?.map((price) => parseFloat(price.close)) ?? [],
+              // data: data?.map((price) => parseFloat(price[4] + "")) ?? [],
+              data: data.map(([t, o, h, l, c]) => ({
+                x: new Date(t).toUTCString(),
+                y: c,
+              })),
             },
           ]}
           options={{
@@ -73,10 +74,7 @@ function Chart({ coinId }: ChartProps) {
               labels: {
                 show: false,
               },
-              categories: data?.map((price) =>
-                new Date(parseFloat(price.time_close) * 1000).toUTCString()
-              ),
-              type: "datetime",
+              // type: "datetime",
             },
             fill: {
               type: "gradient",
